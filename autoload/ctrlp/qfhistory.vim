@@ -18,17 +18,9 @@ let g:ctrlp_ext_vars = get(g:, 'ctrlp_ext_vars', []) ->add(s:qfhistory_var)
 
 " 1. リストの初期化: Quickfixの履歴を取得して整形する
 function! ctrlp#qfhistory#init()
-  let l:history = []
-  " getqflist({'all': 1}) で全履歴を取得（Vim 8.0+ / Neovim）
-  let l:last_nr = getqflist({'nr': '$'}).nr
-
-  for l:i in range(1, l:last_nr)
-    let l:info = getqflist({'nr': l:i, 'title': 1})
-    " 履歴番号とタイトルを組み合わせて表示用に整形
-    call add(l:history, printf("%2d: %s", l:i, l:info.title))
-  endfor
-
-  return reverse(l:history) " 新しい履歴を上に表示
+  return range(1, getqflist({'nr': '$'}).nr)
+        \ ->map({_, val -> printf('%2d: %s', val, getqflist({'nr': val, 'title': 1}).title)})
+        \ ->reverse()
 endfunction
 
 " 2. 選択時の動作: 選択された番号のQuickfixリストに切り替える
