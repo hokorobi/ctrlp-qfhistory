@@ -17,9 +17,16 @@ let s:qfhistory_var = #{
 let g:ctrlp_ext_vars = get(g:, 'ctrlp_ext_vars', []) ->add(s:qfhistory_var)
 
 " 1. リストの初期化: Quickfixの履歴を取得して整形する
-function! ctrlp#qfhistory#init()
-  return range(1, getqflist(#{nr: '$'}).nr)
-        \ ->map({_, val -> printf('%2d: %s', val, getqflist(#{nr: val, title: 1}).title)})
+function! ctrlp#qfhistory#init() abort
+  let l:last_nr = getqflist(#{nr: '$'}).nr
+  if l:last_nr == 0
+    return []
+  endif
+
+  return range(1, l:last_nr)
+        \ ->map({_, val -> getqflist(#{nr: val, title: 1, size: 1})})
+        \ ->filter({_, val -> val.size > 0})
+        \ ->map({_, val -> printf('%2d: [%d] %s', val.nr, val.size, val.title)})
         \ ->reverse()
 endfunction
 
