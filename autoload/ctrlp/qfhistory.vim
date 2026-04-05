@@ -14,18 +14,13 @@ let s:qfhistory_var = {
   \ }
 
 " CtrlP本体にこの拡張を追加
-if exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-  let g:ctrlp_ext_vars = add(g:ctrlp_ext_vars, s:qfhistory_var)
-else
-  let g:ctrlp_ext_vars = [s:qfhistory_var]
-endif
+let g:ctrlp_ext_vars = get(g:, 'ctrlp_ext_vars', []) ->add(s:qfhistory_var)
 
 " 1. リストの初期化: Quickfixの履歴を取得して整形する
 function! ctrlp#qfhistory#init()
   let l:history = []
   " getqflist({'all': 1}) で全履歴を取得（Vim 8.0+ / Neovim）
-  let l:qfall = getqflist({'all': 0, 'nr': '$'})
-  let l:last_nr = l:qfall.nr
+  let l:last_nr = getqflist({'nr': '$'}).nr
 
   for l:i in range(1, l:last_nr)
     let l:info = getqflist({'nr': l:i, 'title': 1})
