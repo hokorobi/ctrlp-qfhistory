@@ -4,13 +4,13 @@ endif
 let g:loaded_ctrlp_qfhistory = 1
 
 " CtrlPにこの拡張を登録するための変数
-let s:qfhistory_var = {
-  \ 'init': 'ctrlp#qfhistory#init()',
-  \ 'accept': 'ctrlp#qfhistory#accept',
-  \ 'lname': 'quickfix history',
-  \ 'sname': 'qfhist',
-  \ 'type': 'line',
-  \ 'sort': 0,
+let s:qfhistory_var = #{
+  \ init: 'ctrlp#qfhistory#init()',
+  \ accept: 'ctrlp#qfhistory#accept',
+  \ lname: 'quickfix history',
+  \ sname: 'qfhist',
+  \ type: 'line',
+  \ sort: 0,
   \ }
 
 " CtrlP本体にこの拡張を追加
@@ -18,8 +18,8 @@ let g:ctrlp_ext_vars = get(g:, 'ctrlp_ext_vars', []) ->add(s:qfhistory_var)
 
 " 1. リストの初期化: Quickfixの履歴を取得して整形する
 function! ctrlp#qfhistory#init()
-  return range(1, getqflist({'nr': '$'}).nr)
-        \ ->map({_, val -> printf('%2d: %s', val, getqflist({'nr': val, 'title': 1}).title)})
+  return range(1, getqflist(#{nr: '$'}).nr)
+        \ ->map({_, val -> printf('%2d: %s', val, getqflist(#{nr: val, title: 1}).title)})
         \ ->reverse()
 endfunction
 
